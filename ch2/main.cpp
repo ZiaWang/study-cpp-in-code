@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 class Person{
@@ -12,6 +13,7 @@ private:
 //    const char m_country;
 
 public:
+    int id;
     const char *m_name;
     const char *m_city;
     const char *m_hobby;
@@ -187,6 +189,18 @@ void std_const_method(){
     std::cout << "wangzihao.get_name() = " << *wangzihao_name << endl;
 }
 
+
+void std_const_obj(){
+    const Person wangzihao("wangzihao", "BeiJing", 25, "1234567890");
+    std::cout << wangzihao.m_name << endl;
+    std::cout << wangzihao.id << endl;
+
+    const Person *wzh = new Person("wzh", "BeiJing", 25, "1234567890");
+    std::cout << wzh -> m_name << endl;
+    std::cout << wzh -> id << endl;
+}
+
+
 // 析构函数在对象被销毁时调用，而对象的销毁时机与它所在的内存区域有关。
 //      位于全局的对象，在程序执行结束的时候会调用这些对象的析构函数。
 //      栈中的对象，在函数执行结束的时候会调用对象的析构函数。
@@ -250,6 +264,10 @@ int main(){
 
 /* const成员函数
     std_const_method();
+ */
+
+/* const成员对象
+    std_const_obj();
  */
 
 
