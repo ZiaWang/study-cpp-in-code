@@ -46,6 +46,14 @@ public:
     //      普通成员函数有 this 指针，可以访问类中的任意成员；而静态成员函数没有 this 指针，只能访问静态成员（包括静态成员变量和静态成员函数）。
     static int get_count();
     static void other_static_method();
+
+    // const成员函数（常成员函数，类似常量，const成员函数中，不能对任何成员变量进行修改，因此一些只限制有读操作的methdo会声明为const成员函数）
+    //      1. 声明const成员函数时，const关键字需要放在函数头部的结尾（参数列表后面）；
+    //      2. 声明const成员函数和定义const成员函数的时候，都需要加上const关键字，关键字的位置相同。
+    // const的位置：
+    //      1. const char *get_name()，这里的const表示返回值是一个不可更改的const常量
+    //      2. char *get_name() const，这里的const表示该函数是一个const成员函数，函数体内部不能对成员变量做任何修改
+    const char *get_name() const;
 };
 
 // static修饰的静态变量在初始化的时候才会分配内存，因此必须在类声明的外部进行初始化之后，才能使用static静态变量。
@@ -114,6 +122,10 @@ void Person::other_static_method() {
     std::cout << "Person::other_static_method run" << endl;
 }
 
+const char * Person::get_name() const{
+    return m_name;
+}
+
 
 void std_instance(){
     // 实例化对象有多种方式，一种是在栈内存上创建，该内存会自动回收，另一种是在堆上创建，该内存需要我们自己调用delete来回收
@@ -164,6 +176,15 @@ void std_static_var(){
     std::cout << "Person.m_count = " << Person::m_count << endl;
 
     delete  wzh;
+}
+
+
+void std_const_method(){
+    Person wangzihao("wangzihao", "BeiJing", 25, "1234567890");
+
+    const char *wangzihao_name = wangzihao.get_name();
+
+    std::cout << "wangzihao.get_name() = " << *wangzihao_name << endl;
 }
 
 // 析构函数在对象被销毁时调用，而对象的销毁时机与它所在的内存区域有关。
@@ -226,6 +247,11 @@ int main(){
     std::cout << "wzh -> get_count() = " << wzh -> get_count() << endl;         // 2
 
  */
+
+/* const成员函数
+    std_const_method();
+ */
+
 
     return 0;
 }
