@@ -38,6 +38,14 @@ public:
     void set_age(int age);
     void set_mob(const char *mob);
     void add_hobby(const char *hobby);
+
+    // C++静态成员函数（或者叫静态方法），该方法中限制只能访问静态成员变量（即静态属性）。
+    //      1. 静态成员函数可以直接通过类来调用，编译器不会默认给函数传递参数this，因为他不需要对象的地址。
+    //      2. 在C++中，静态成员函数的主要目的是访问静态成员。get_count() 当然也可以声明为普通成员函数，但是它们都只对静态成员进行操作，加上 static 语义更加明确。
+    // 静态成员函数与普通成员函数的根本区别在于：
+    //      普通成员函数有 this 指针，可以访问类中的任意成员；而静态成员函数没有 this 指针，只能访问静态成员（包括静态成员变量和静态成员函数）。
+    static int get_count();
+    static void other_static_method();
 };
 
 // static修饰的静态变量在初始化的时候才会分配内存，因此必须在类声明的外部进行初始化之后，才能使用static静态变量。
@@ -57,11 +65,14 @@ Person::Person(const char *name, const char *city, int age, const char *mob): m_
     m_count += 1;
 }
 
+
 Person::~Person() {
     delete [] m_hobby;
 }
 
+
 void Person::add_hobby(const char *hobby) {}
+
 
 void Person::hello() {
     std::cout << "name = " << m_name << endl;
@@ -90,6 +101,17 @@ void Person::set_mob(const char *mob) {
 //        3. 成员函数最终被编译成与对象无关的普通函数，除了成员变量，会丢失所有信息，所以编译时要在成员函数中添加一个额外的参数，
 //           把当前对象的首地址传入，以此来关联成员函数和成员变量。这个额外的参数，实际上就是 this，它是成员函数和成员变量关联的桥梁。
     this -> m_mob = mob;
+}
+
+
+// 和静态成员变量类似，静态成员函数在声明时要加 static，在定义时不能加 static
+int Person::get_count() {
+    Person::other_static_method();
+    return Person::m_count;
+}
+
+void Person::other_static_method() {
+    std::cout << "Person::other_static_method run" << endl;
 }
 
 
@@ -126,7 +148,7 @@ void std_initialize(){
 }
 
 
-void std_static(){
+void std_static_var(){
     Person wangzihao("wangzihao", "BeiJing", 25, "1234567890");
     Person *wzh = new Person("wzh", "BeiJing", 25, "1234567890");
 
@@ -193,10 +215,17 @@ int main(){
  */
 
 /*  static变量
-
+    std_static_var();
  */
 
-    std_static();
+/*  static方法
+    std::cout << "Person::get_count() = " << Person::get_count() << endl;       // 0
+    Person wangzihao("wangzihao", "BeiJing", 25, "1234567890");
+    std::cout << "wangzihao.get_count() = " << wangzihao.get_count() << endl;       // 1
+    Person *wzh = new Person("wzh", "BeiJing", 25, "1234567890");
+    std::cout << "wzh -> get_count() = " << wzh -> get_count() << endl;         // 2
+
+ */
 
     return 0;
 }
