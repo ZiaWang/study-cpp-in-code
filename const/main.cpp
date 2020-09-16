@@ -1,11 +1,39 @@
 #include <iostream>
 #include <cstring>
+#define USER "wangzihao"
 
 using namespace std;
 
 int get_num(){
     return 1;
 }
+
+void std_define_const(){
+    /*  使用define定义常量
+     *      #define name value
+     *
+     *  define与const创建常量的区别：
+     *      1. define不会做类型的安全检查，const由于声明时需要指定常量类型，会做类型检查
+     *      2. define声明的常量，可以再undef取消掉，但是const声明的变量时不能再取消的
+     *      3. define声明的常量，不管#define是在何处，都会在全局生效；而const声明的常量则与命名空间有关系。
+     *      4. TODO: 未完待补充
+     */
+
+    std::cout << "USER = " << USER << endl;
+
+    {
+        #define NAME "wzh"
+    }
+    std::cout << "NAME = " << NAME << endl;
+
+    {
+        const int age = 1;
+    }
+
+    // std::cout << "age = " << age << endl;       // error: Use of undeclared identifier 'age'
+
+}
+
 
 void std_const_var_base(){
     /* const常量的基本特性:
@@ -110,5 +138,11 @@ int main() {
 /*  将非const数据赋值给const常量
     std_nonconst_to_const
  */
+
+/*  define与const创建常量
+ *
+ */
+    std_define_const();
+
     return 0;
 }
