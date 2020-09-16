@@ -264,6 +264,56 @@ void std_for(){
     }
 }
 
+void std_while(){
+    int count = 0;
+
+    int sum = 0;
+    while (count < 10){
+        sum += 1;
+
+        count += 1;
+    }
+}
+
+
+void std_do_while(){
+    /*  do...while...
+     *      与for、while不同的是：do...while保证至少执行一次循环体中的逻辑，执行完一次之后再检查条件是否满足。而for、while是在执行循环体之前就做一下是否执行循环体代码的判断
+    */
+
+    int count = 0;
+
+    do {
+        count += 1;
+    }while (false);
+
+    assert(count == 1);
+}
+
+
+void std_switch(){
+    enum color{red, blue, black, yellow} c;
+
+    c = blue;
+
+    switch (c) {
+        case red:
+            std::cout << "red" << endl;
+            break;
+        case blue:
+            std::cout << "red" << endl;
+            break;
+        case black:
+            std::cout << "black" << endl;
+        case yellow:
+            std::cout << "yellow" << endl;
+            break;
+        default:
+            std::cout << "default" << endl;
+    }
+}
+
+
 
 void std_fund(){
     /*  函数
@@ -283,6 +333,7 @@ static void std_local_static_var(){
     std::cout << "static int n = " << n << endl;
     n++;
 }
+
 
 static void std_static_var(){
     /*  static静态变量：
@@ -323,6 +374,29 @@ int std_func_with_default_params(int a, int increment=1){
 }
 
 
+void std_operator(){
+    /* C++运算符
+     *      算术运算符
+     *          +、-、*、/、%
+     *          +=、-=、*=、/=、%=
+     *      逻辑运算符
+     *          ||  或
+     *          &&  与
+     *          !   非
+     *      关系运算符
+     *          ==、!=
+     *          >、<
+     *          >=、<=
+     *      其他运算符
+     *          & ：
+     *              1. 返回变量的内存地址（即指针的值）
+     *              2. 用于声明引用
+     *          *：
+     *              1. 声明指针，指向一个变量。
+     *
+     */
+}
+
 int main() {
 /*  基础数据类型
  *  std_datatype();
@@ -334,6 +408,16 @@ int main() {
 
 /* 静态局部变量
  *     std_static_var();
+ */
+
+/*  循环
+ *  std_for();
+ *  std_while();
+ *  std_do_while();
+ */
+
+/*  判断
+ *  std_switch();
  */
     return 0;
 }
