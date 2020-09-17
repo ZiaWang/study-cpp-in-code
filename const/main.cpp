@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstring>
 #define USER "wangzihao"
+#define NUM 123
+
 
 using namespace std;
 
@@ -11,6 +13,7 @@ int get_num(){
 void std_define_const(){
     /*  使用define定义常量
      *      #define name value
+     *      name一般都是全大写字母
      *
      *  define与const创建常量的区别：
      *      1. define不会做类型的安全检查，const由于声明时需要指定常量类型，会做类型检查
@@ -21,15 +24,20 @@ void std_define_const(){
 
     std::cout << "USER = " << USER << endl;
 
+    // 不管在那个命名空间中执行的 #define 创建全局变量，作用都是全局的。
     {
         #define NAME "wzh"
     }
     std::cout << "NAME = " << NAME << endl;
 
+    // undef取消掉NAME全局变量之后再尝试调用该变量，会报错。
+    #undef NAME
+    // std::cout << "NAME = " << NAME << endl;     // error: use of undeclared identifier 'NAME'
+
+    // const创建的常量的作用范围与命名空间有关系。
     {
         const int age = 1;
     }
-
     // std::cout << "age = " << age << endl;       // error: Use of undeclared identifier 'age'
 
 }
@@ -39,6 +47,7 @@ void std_const_var_base(){
     /* const常量的基本特性:
      *    1. 不可变性。常量是不可以被修改的。
     */
+
     // const int A = 1;
     // A = 2;       // error: cannot assign to variable 'A' with const-qualified type 'const int'
 
@@ -59,8 +68,6 @@ void std_const_var_base(){
 
     int num3 = 1;
     const int NUM3 = num3;           // 运行程序时才初始化
-
-
 }
 
 
@@ -75,6 +82,9 @@ void std_const_ptr(){
 
     const char *name1 = "wangzihao";     // *name1的值不能修改，后面只能是"wangzihao"
     char const *name2 = "wangzihao";     // *name2的值不能修改，后面只能是"wangzihao"
+    // *name1 = "wzh";     // error: Read-only variable is not assignable
+    // *name2 = "wzh";     // error: Read-only variable is not assignable
+
     char * const name3 = "wangzihao";    // &name3的值不能修改
 
     const char * const name4 = "wangzihao";    // &name4的值和*name4的值都不能修改
@@ -115,7 +125,7 @@ void std_nonconst_to_const(){
      *         将非 const 类型转换为 const 类型是允许的。
      */
     char *name = "wangzihao";
-    f(name);
+    f(name);        // 这里就不会报错
 
     // const char *name2 = "asdasd";
     // name = name2;       // error: assigning to 'char *' from incompatible type 'const char *'
@@ -142,7 +152,6 @@ int main() {
 /*  define与const创建常量
  *
  */
-    std_define_const();
 
     return 0;
 }

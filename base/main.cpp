@@ -1,5 +1,9 @@
 #include <iostream>
+#include "mybase.h"
+
+
 using namespace std;
+
 
 /* include
  *      1. include表示要从其他地方导入包，他后面有两种格式 "#include <iostream>" 和 'include "iostream"  '。两者的区别在于包搜索顺序的不同。
@@ -10,6 +14,7 @@ using namespace std;
  *          2. 对于旧版的C++的包，去掉后面的".h"后缀，即"#include <iostream>"
  */
 
+
 /* .h文件与.cpp文件
  *      前者又叫头文件，里面存放的都是我们的声明
  *      后者用来存放定义，是头文件中声明的具体实现。
@@ -17,6 +22,25 @@ using namespace std;
  *          1. 要想在当前cpp文件中使用其他模块的函数，就需要使用include导入对应模块的头文件
  *          2. 当我们需要定义类里的成员函数，或者我们需要使用这个类时，我们在 cpp 中需要 include 这个头文件。
  */
+
+
+// 实现头文件中声明的函数
+void std_declare_func_in_head_file(char *s){
+    // 头文件中声明（但是没有初始化）的变量，可以在其他cpp文件重复声明。
+    // int std_declare_var_in_head_file1;
+
+    // 头文件中已经声明并初始化的变量，在其他cpp文件中声明和初始化会覆盖该变量的了。
+    int std_declare_var_in_head_file2;
+
+    // 给头文件中声明的变量初始化赋值
+    std_declare_var_in_head_file1 = 10;
+    std::cout << std_declare_var_in_head_file1 << endl;
+
+    // 调用头文件中已经声明并初始化好的变量
+    std::cout << std_declare_var_in_head_file2 << endl;     // 0
+
+    std::cout << s << endl;
+}
 
 
 void std_cin_cout(){
@@ -58,24 +82,24 @@ void std_define_var(){
      *      1. extern
      *          在声明变量/函数的时候使用，用于告诉编译器，遇到此变量/函数的时候，去其他模块中寻找该变量的定义（要求该）。
      *          用于避免全局变量名重复声明，建议使用namespace
+     *  注意：
+     *      1. 变量声明不像C语言一样，严格要求在函数起始处声明，C++中只要在初始化变量之前声明即可。这个好处是可以让我们在for循环等代码块中声明变量了
      */
-
-    // 变量声明不像C语言一样，严格要求在函数起始处声明，C++中只要在初始化变量之前声明即可
     std::cout << "不在函数起始位置声明变量" << std::endl;
     int num1, num2 = 2;
     num1 = num2 + 1;
     std::cout << "num1 = " << num1 << endl;
 
-    // 这个好处是可以让我们在for循环等代码块中声明变量了
     for (int i=1; i<=3; i++){
         std::cout << "i = " << i << endl;
     }
+
     // 在for循环外部，i变量的值就无法获得的，这里编译main.cpp文件的时候会抛出异常
-//    std::cout << "try get i = " << i << endl;       // error: use of undeclared identifier 'i'
+    // std::cout << "try get i = " << i << endl;       // error: use of undeclared identifier 'i'
 }
 
 
-// 全局变量（在整个程序的声明周期中有效）
+// 全局变量（在整个程序的生命周期中有效）
 int flag = 1;
 void std_var_scope(){
     /*  变量的作用域
@@ -84,63 +108,40 @@ void std_var_scope(){
      *      2. 局部变量：在函数体内部或者代码块内部声明的变量
      *          局部变量只会在函数内部/代码块内部生效，随着代码块的执行，然后才会在内存中创建存储变量的空间，当代码块执行结束之后，会释放掉。
      */
-    std::cout << "global flag = "  << flag << endl;
+    std::cout << "global flag = "  << flag << endl;         // 1
     int flag = 2;
 
     if (1){
         int flag = 3;
-        std::cout << "inner2 flag = "  << flag << endl;
+        std::cout << "inner2 flag = "  << flag << endl;     // 3
     }
-    std::cout << "inner1 flag = "  << flag << endl;
+    std::cout << "inner1 flag = "  << flag << endl;         // 2
 }
 
 
 void std_datatype_size(){
     cout << "type: \t\t" << "************size**************"<< endl;
+
     cout << "bool: \t\t" << "所占字节数：" << sizeof(bool);
     cout << "\t最大值：" << (numeric_limits<bool>::max)();
     cout << "\t\t最小值：" << (numeric_limits<bool>::min)() << endl;
+
     cout << "char: \t\t" << "所占字节数：" << sizeof(char);
     cout << "\t最大值：" << (numeric_limits<char>::max)();
     cout << "\t\t最小值：" << (numeric_limits<char>::min)() << endl;
-    cout << "signed char: \t" << "所占字节数：" << sizeof(signed char);
-    cout << "\t最大值：" << (numeric_limits<signed char>::max)();
-    cout << "\t\t最小值：" << (numeric_limits<signed char>::min)() << endl;
-    cout << "unsigned char: \t" << "所占字节数：" << sizeof(unsigned char);
-    cout << "\t最大值：" << (numeric_limits<unsigned char>::max)();
-    cout << "\t\t最小值：" << (numeric_limits<unsigned char>::min)() << endl;
-    cout << "wchar_t: \t" << "所占字节数：" << sizeof(wchar_t);
-    cout << "\t最大值：" << (numeric_limits<wchar_t>::max)();
-    cout << "\t\t最小值：" << (numeric_limits<wchar_t>::min)() << endl;
-    cout << "short: \t\t" << "所占字节数：" << sizeof(short);
-    cout << "\t最大值：" << (numeric_limits<short>::max)();
-    cout << "\t\t最小值：" << (numeric_limits<short>::min)() << endl;
+
     cout << "int: \t\t" << "所占字节数：" << sizeof(int);
     cout << "\t最大值：" << (numeric_limits<int>::max)();
     cout << "\t最小值：" << (numeric_limits<int>::min)() << endl;
-    cout << "unsigned: \t" << "所占字节数：" << sizeof(unsigned);
-    cout << "\t最大值：" << (numeric_limits<unsigned>::max)();
-    cout << "\t最小值：" << (numeric_limits<unsigned>::min)() << endl;
-    cout << "long: \t\t" << "所占字节数：" << sizeof(long);
-    cout << "\t最大值：" << (numeric_limits<long>::max)();
-    cout << "\t最小值：" << (numeric_limits<long>::min)() << endl;
-    cout << "unsigned long: \t" << "所占字节数：" << sizeof(unsigned long);
-    cout << "\t最大值：" << (numeric_limits<unsigned long>::max)();
-    cout << "\t最小值：" << (numeric_limits<unsigned long>::min)() << endl;
+
     cout << "double: \t" << "所占字节数：" << sizeof(double);
     cout << "\t最大值：" << (numeric_limits<double>::max)();
     cout << "\t最小值：" << (numeric_limits<double>::min)() << endl;
-    cout << "long double: \t" << "所占字节数：" << sizeof(long double);
-    cout << "\t最大值：" << (numeric_limits<long double>::max)();
-    cout << "\t最小值：" << (numeric_limits<long double>::min)() << endl;
+
     cout << "float: \t\t" << "所占字节数：" << sizeof(float);
     cout << "\t最大值：" << (numeric_limits<float>::max)();
     cout << "\t最小值：" << (numeric_limits<float>::min)() << endl;
-    cout << "size_t: \t" << "所占字节数：" << sizeof(size_t);
-    cout << "\t最大值：" << (numeric_limits<size_t>::max)();
-    cout << "\t最小值：" << (numeric_limits<size_t>::min)() << endl;
-    cout << "string: \t" << "所占字节数：" << sizeof(string) << endl;
-    // << "\t最大值：" << (numeric_limits<string>::max)() << "\t最小值：" << (numeric_limits<string>::min)() << endl;
+
     cout << "type: \t\t" << "************size**************"<< endl;
 }
 
@@ -262,7 +263,15 @@ void std_for(){
             count += 1;
         }
     }
+
+    // for循环代码块内部定义的变量，在for代码块之外是没法调用的
+    for (int i=1;i<=2;i++){
+        int tmp = 0;
+    }
+
+    // std::cout << tmp << endl;       // error: Use of undeclared identifier 'tmp'
 }
+
 
 void std_while(){
     int count = 0;
@@ -278,7 +287,8 @@ void std_while(){
 
 void std_do_while(){
     /*  do...while...
-     *      与for、while不同的是：do...while保证至少执行一次循环体中的逻辑，执行完一次之后再检查条件是否满足。而for、while是在执行循环体之前就做一下是否执行循环体代码的判断
+     *      与for、while不同的是：do...while保证至少执行一次循环体中的逻辑，执行完一次之后再检查条件是否满足。
+     *      而for、while是在执行循环体之前就做一下是否执行循环体代码的判断
     */
 
     int count = 0;
@@ -315,13 +325,12 @@ void std_switch(){
 
 
 
-void std_fund(){
+void std_func(){
     /*  函数
      *
      *  注意:
      *      1. C/C++ 编译 cpp 文件是从上往下编译，所以 main 函数里面调用其他函数时，如果其他函数在 main 函数的下面，
      *         则要在 main 函数上面先声明这个函数。
-     *      2.
      */
 }
 
@@ -397,7 +406,13 @@ void std_operator(){
      */
 }
 
+
 int main() {
+/* 头文件
+ *  char *s = "111111";
+ *  std_declare_func_in_head_file(s);
+ */
+
 /*  基础数据类型
  *  std_datatype();
  */
@@ -419,5 +434,12 @@ int main() {
 /*  判断
  *  std_switch();
  */
+
+/*  数据类型大小
+    char name[10] = "wangzihao";        // 10，每一个字符占一个字节
+    std::cout << "size of char name[10] = " << sizeof(name) << endl;
+
+    std_datatype_size();
     return 0;
-}
+*/
+ }

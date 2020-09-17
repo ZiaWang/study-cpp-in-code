@@ -3,6 +3,7 @@
 using namespace std;
 
 void std_ref_define(){
+    // 声明一个引用类型： type &name;
     int a = 1;
     int &b = a;
 
