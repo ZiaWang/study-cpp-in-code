@@ -232,6 +232,146 @@ void std_method_cover(){
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 研究c++继承时的"向上转型"
+
+/* 基类与子类之间的向上转型
+ *      1. 在 C/C++ 中经常会发生数据类型的转换，例如将 int 类型的数据赋值给 float 类型的变量时，编译器会先把 int 类型
+ *         的数据转换为 float 类型再赋值；反过来，float 类型的数据在经过类型转换后也可以赋值给 int 类型的变量。
+ *
+ *         数据类型转换的前提：编译器知道如何对数据进行取舍
+ *
+ *         类其实也是一种数据类型，也可以发生数据类型转换，不过这种转换只有在基类和派生类之间才有意义，并且只能将派生类赋值给基类，
+ *         包括将派生类对象赋值给基类对象、将派生类指针赋值给基类指针、将派生类引用赋值给基类引用，这在 C++ 中称为向上转型（Upcasting），
+ *         向上转型非常安全，可以由编译器自动完成
+ *      2. 赋值的本质是将现有的数据写入已分配好的内存中，对象的内存只包含了成员变量，所以对象之间的赋值是成员变量的赋值，
+ *         成员函数不存在赋值问题（调用函数时，还是根据对象的类型，调用相应类的方法）。
+ *
+ */
+
+class Par2{
+private:
+    int m_pri_a;
+
+public:
+    int m_pub_b;
+
+    Par2(int a, int b);
+    void show() const;
+    int get_a() const { return m_pri_a; };
+    int get_b() const { return m_pub_b; };
+    static void f(){ std::cout << "Par2::f run" << endl; };
+};
+
+Par2::Par2(int a, int b): m_pri_a(a), m_pub_b(b) { std::cout<< "Par2::Par2 run " << endl; }
+void Par2::show() const{
+    std::cout << "Par2::show" << endl;
+    std::cout << "m_pri_a = " << m_pri_a << endl;
+    std::cout << "m_pub_b = " << m_pub_b << endl;
+    std::cout << "Par2::show  end ......." << endl;
+}
+
+class Son2: public Par2{
+private:
+    int m_pri_m;
+
+public:
+    int m_pub_n;
+
+    Son2(int a, int b, int m, int n);
+    void show() const;
+    static void g(){ std::cout << "Son2::g run" << endl; };
+};
+
+Son2::Son2(int a, int b, int m, int n): Par2(a, b), m_pri_m(m), m_pub_n(n) { std::cout<< "Son2::Son2 run " << endl; }
+void Son2::show() const{
+    std::cout << "Son2::show" << endl;
+    std::cout << "get_a() = " << get_a() << endl;
+    std::cout << "get_b() = " << get_b() << endl;
+    std::cout << "m = " << m_pri_m << endl;
+    std::cout << "n = " << m_pub_n << endl;
+    std::cout << "Son2::show  end ......." << endl;
+}
+
+
+void std_up_change_by_obj(){
+    // 通过对象向上赋值
+
+    Par2 p(1, 2);
+    Son2 s(10, 20, 30, 40);
+
+    p.show();
+    s.show();
+
+    /* 将Son2子类的实例对象赋值给Par2基类的实例对象，c++会做下面的操作：
+     *      1. 将子类与基类共有的成员变量（a、b），从子类对象拷贝到父类对象，也就是说在保证父类对象p的内存布局不变的情况下，修改里面存放的值。
+     *      2. 对于基类中没有的成员变量，将舍弃。
+     *      3. 父类实例对象的类型肯定不会变化。其实本质上就是一个赋值操作（或者说就是一次内存拷贝）
+     *
+     */
+    p = s;      // 10, 20
+
+    // 调用的是父类的show方法
+    p.show();   // Par2::show       m_pri_a = 10    m_pub_b = 20
+
+    // 调用的是父类的f方法
+    p.f();      // Par2::f run
+}
+
+
+void std_up_change_by_ptr(){
+    // 通过指针向上赋值
+
+    Par2 *p = new Par2(1, 2);
+    Son2 *s = new Son2(10, 20, 30, 40);
+
+    std::cout << "p = " << p << endl;       // 0x7f94cfc02610
+    std::cout << "s = " << s << endl;       // 0x7f94cfc02620
+
+    /* 将子类指针赋值给父类指针
+     *      1. 此时没有出现对象赋值时对的拷贝操作，只是简单的将子类对象的指针赋值给了父类对象。
+     *      2. 虽然赋值之后，父类对象持有的是子类对象内存的指针，但是类型仍然没变，调用方法的时候，仍然是调用Par2类的方法，
+     *         也就是说将派生类指针赋值给基类指针时，通过基类指针只能使用派生类的成员变量，但不能使用派生类的成员函数。
+     *         原因：
+     *              编译器虽然通过指针的指向来访问成员变量，但是却不通过指针的指向来访问成员函数：编译器通过指针的类型来访问成员函数
+     *  概括起来说就是：
+     *      编译器通过指针来访问成员变量，指针指向哪个对象就使用哪个对象的数据
+     *      编译器通过指针的类型来访问成员函数，指针属于哪个类的类型就使用哪个类的函数。
+     */
+    p -> show();
+    s -> show();
+
+    p = s;
+    std::cout << "p = " << p << endl;       // 0x7f94cfc02620
+    std::cout << "s = " << s << endl;       // 0x7f94cfc02620
+
+    p -> show();
+
+    p -> f();
+
+    // p -> g();       // error : No member named 'g' in 'Par2'
+}
+
+
+void std_up_change_by_reference(){
+    /* 使用引用向上赋值
+     *      引用和指针并没有本质上的区别，引用仅仅是对指针进行了简单封装，所以表现跟向上赋值指针是一样的逻辑。
+     */
+
+    Par2 p(1, 2);
+    Par2 &p_ref = p;
+
+    Son2 s(10, 20, 30, 40);
+    Son2 &s_ref = s;
+
+    p_ref.show();
+    s_ref.show();
+
+    p_ref = s_ref;
+
+    p_ref.show();
+    p_ref.f();
+    // p_ref.g();      // No member named 'g' in 'Par2'
+}
 
 
 int main() {
@@ -243,6 +383,12 @@ int main() {
      *
      *
      *
+     */
+
+    /* 向上转型
+     *      std_up_change_by_obj();
+     *      std_up_change_by_ptr();
+     *      std_up_change_by_reference();
      */
     return 0;
 }
