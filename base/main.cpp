@@ -407,6 +407,15 @@ void std_operator(){
 }
 
 
+void std_pragma(){
+    Demo obj;
+
+    std::cout << sizeof(obj) << endl;
+};
+
+
+
+
 int main() {
 /* 头文件
  *  char *s = "111111";
@@ -442,4 +451,6 @@ int main() {
     std_datatype_size();
     return 0;
 */
- }
+
+    std_pragma();
+}
