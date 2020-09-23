@@ -240,6 +240,122 @@ void std_bool(){
 }
 
 
+void std_c_char(){
+    /*  C风格的字符串
+     *      概述：c++是支持c语言字符串的，c语言字符串实际上是一个字符数组，这个字符串数组以null字符'\0'结尾，
+     *  声明与初始化：
+     *      因为这种字符串本质上是一个字符数组，所以我们可以用数据的方式来声明。
+     *      比如：
+     *          char name[10] = "wangzihao";
+     *          char name2[10] = {'w', 'a', 'n', 'g', 'z', 'i', 'h', 'a', 'o'};
+     *
+     *  相关函数：
+     *      c语言提供了很多用来操作这种以null结尾字符串的函数，比如strcpy、strcat等等（见<cstring>库）
+     */
+    // 长度为10，是因为最后跟着一个 null 字符
+    char name1[10] = "wangzihao";       // 可修改的，可以声明为const
+    char name2[10] = {'w', 'a', 'n', 'g', 'z', 'i', 'h', 'a', 'o'};
+
+    std::cout << name1 << std::endl;        // wangzihao
+    std::cout << name2 << std::endl;        // wangzihao
+}
+
+
+void std_cpp_string(){
+    /* c++风格的string
+     *      c++提供了自己的字符串 string
+     *
+     * 特点：
+     *      1. 不再以null结尾
+     */
+
+    string name1 = "wangzihao";         // 初始化的时候不需要像c字符串一样指定长度
+    string name2 = "wzh";
+
+    string name3 = name2;               // 通过赋值来初始化name3，实际上是将name2的值拷贝给name3
+
+    string name4 = name1 + name2;       // 拼接的时候，不用再担心会溢出
+}
+
+
+void std_cpp_array(){
+    /* c++ 数组
+     *      特点：
+     *          1. 存储一个固定大小的相同类型元素的顺序集合。
+     *          2. 所有的数组都是由连续的内存位置组成。数组中的元素可以通过下标索引来访问
+     * 声明数据：
+     *      element_type array_name[array_size]
+     *      比如 int nums[10]，用来存储10个整数的数组。
+     *      也可以不指定array_size，比如  int nums[]，但是此时必须对其进行初始化，因为如果不初始化，编译器就不知道这个数据类型具体占用多大空间了。
+     *      实际上，大小也可以作为数组类型的一种：
+     *          比如 int nums[1]和int nums[2]就不是一种类型
+     *          而 int nums[10]和int arr[10]就是同一种类型
+     *
+     *
+     */
+
+    int nums1[] = {1, 2, 3};        // 中括号中不指定大小的时候，必须对齐进行初始化
+
+    int nums2[3];                   // 只声明，不初始化
+    nums2[0] = 1;
+    nums2[0] = 2;
+
+    std::cout << nums2 << std::endl;
+    std::cout << &nums2[0] << std::endl;
+    assert(nums2 == &nums2[0]);     // 数组变量实际上就是一个指针，指针的值就是数组中第一个元素的内存地址。
+
+    std::cout << nums2[0] << std::endl;
+
+    int nums3[2] = {1, 2};
+
+    // 试试字符串数组
+    char *names[3] = {"wangzihao", "wzh", "WZH"};
+    assert(names[0] == "wangzihao");
+
+}
+
+
+void std_cpp_multi_array(){
+    /* c++ 多维数组
+     *      多维数据本质上还是一个一维数组。c++支持我们声明和创建一个多维数组。
+     *
+     * 声明格式：
+     *      element_type array_name[dim1][dim2]...[dim_n]
+     *      element_type是数组中数据的类型
+     *      array_name是数组的名称，该变量持有的同样是数组第一个元素的内存地址。
+     *      dim1、dim2...dim_n是每一维的大小。
+     *
+     *      比如：
+     *          int arr[4][3]表示声明了一个四行三列，数据类型为int的二维数组。
+     *          float arr[4][3][2]表示声明了一个四行三列两页，数据类型为float的三维数组。
+     *
+     * 初始化：
+     *      初始化的时候有两种方式：
+     *          一种是按照维度将数据排列成多个数组赋值
+     *              int nums[2, 3] = {{1, 2, 3}, {4, 5, 6}}
+     *          另一种是直接赋值一个数组，但是这个数组的大小要与声明的大小一致。
+     *              int multi_arr2[2][3] = {1, 2 ,3 , 4, 5, 6};
+     *
+     *              如果大小不一致，则剩余的值会被初始化为，该类型的默认值，比如int就是0。
+     *  访问：
+     *      访问多维数据也是通过下标索引访问的。每一个中括号中的值，都对应着该维度下的索引位置的数据。
+     *
+     */
+
+    int multi_arr1[2][3] = {{1, 2, 3}, {4, 5, 6}};
+
+    int multi_arr2[2][3] = {1, 2, 3, 4, 5, 6};
+
+    assert(multi_arr1[0][0] == multi_arr2[0][0]);       // 比较元素的值
+    assert(multi_arr1 != multi_arr2);                   // 这样比较的实际上是数组的第一个元素的指针。肯定不相等
+
+    int multi_arr3[2][3] = {1, 2, 3, 4};
+    assert(multi_arr3[1][0] == 4);
+    assert(multi_arr3[1][1] == 0);
+    assert(multi_arr3[1][2] == 0);
+}
+
+
 void std_for(){
     int count = 3;
     int sum = 0;
@@ -322,7 +438,6 @@ void std_switch(){
             std::cout << "default" << endl;
     }
 }
-
 
 
 void std_func(){
@@ -414,8 +529,6 @@ void std_pragma(){
 };
 
 
-
-
 int main() {
 /* 头文件
  *  char *s = "111111";
@@ -452,5 +565,15 @@ int main() {
     return 0;
 */
 
+/* pragma
     std_pragma();
+*/
+
+/* 数组
+    std_cpp_array();
+
+*/
+
+    std_cpp_string();
+    return 1;
 }
