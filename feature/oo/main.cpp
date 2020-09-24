@@ -279,11 +279,5 @@ int main(){
     std_const_obj();
  */
 
-
     return 0;
 }
-
-
-
-
-
