@@ -211,8 +211,127 @@ void std_array(){
 }
 
 
+////////////////////////////////////////////////////////////////////////
+/* ~~~~~~~~~~~~~~~~~~~~ c++ 转换构造函数
+ *
+ * 自动类型转换与强制类型转换：
+ *      不同的数据类型之间可以相互转换。无需用户指明如何转换的称为自动类型转换（隐式类型转换），需要用户显式地指明如何转换的称为强制类型转换。
+ *
+ *      自动类型转换：我们不需要告诉编译器类型的转换规则，编译器会使用内置的一套规则完成数据类型的转换。
+ *          比如：
+ *              int a = 7;
+ *              a = 1.1 + a;
+ *              在这种情况下，c++编译器会先执行等式右边的逻辑，也就是说，将a变成float类型，然后再跟1.1相加，得到了8.1，再赋值给a，
+ *              由于a的变量类型是int，所以还会将8.1转换成8，再赋值。
+ *
+ *      强制类型转换：我们需要通过语法来告诉编译器，要将某个类型的数据强制转换成我们指定的类型。
+ *          比如：
+ *              int a = 1;
+ *              int *b = &a;
+ *
+ *              float *c = (float*) b;
+ *              在这种情况下，如果我们不指定"(float*)"，直接将int类型的指针b赋值给float类型的指针c，编译器是会报错的。
+ *              b指针指向的内存是存储了整数的内存，而c指针的类型是浮点型，如果将c的指针指向b对应的整型内存空间，在对c进行操作的时候，
+ *              会把c当作浮点数来处理，但是从内存中取出来的是整数。由于计算机中整型和浮点型存储的方式不一样，使用浮点数的方式去操作整数，
+ *              会导致内存中数据出问题，引发奇怪的错误。因此c++默认不允许这种类型转换，但是我们如果非要转换的话，就得使用强制类型转换。
+ * 转换构造函数
+ *      实际上，就算有时候我们使用强制类型转换，也不一定能转换成功，因为编译器需要知道如何将现有数据转换成对应的数据，否则的话，只会转换失败。
+ *      c++给我们预留了"转换构造函数"这个接口来实现将其他类型的数据转换成当前类型的数据，我们只需要给当前类型的数据创建一个"转换构造函数"就行了
+ *
+ *      转换构造函数也是一种构造函数，它遵循构造函数的一般规则。转换构造函数*只有一个参数*，这个参数就是编译器尝试进行自动转换时，传入的value。
+ *      比如：
+ *          int a = 1.111;
+ *          那么1.111就是"转换构造函数"传递进去的值。
+ *
+ * c++中的构造函数：
+ *      默认构造函数
+ *          class_name();
+ *          c++默认会调用的构造函数
+ *      普通构造函数
+ *          class_name(typename1 var1, typename2 var2, ...)
+ *          用户自定义对的构造函数
+ *      拷贝构造函数
+ *          class_name(const class_name &obj)
+ *      转换构造函数
+ *          class_name(typename var)
+ *
+ *      因此，以下面的Complex类为例，如果普通构造函数中包含了默认参数，那么就可以让"转换构造函数"直接复用普通构造函数的逻辑
+ *          Complex(int real_v, int virtual_v=0):m_real(real_v), m_virtual(virtual_v) {}
+ *
+ * 类型转换函数：
+ *      上面实际上是将其他类型的数据转换成当前类型的数据，但是有时候我们需要将当前类型数据转换成其他类型数据。这个时候，我们就需要定义"类型转换函数
+ *      格式：
+ *          operator typename(){ return data; }
+ *              operator是关键字。
+ *              typename是我们的目的类型。
+ *              data是typename对应类型的一个值。
+ *      具体举例见下面complex，我们实现一个将complex转换成int数据的类型转换函数。
+ *
+ *
+ */
+
+class Complex{
+public:
+    Complex(int real_v, int virtual_v):m_real(real_v), m_virtual(virtual_v) {}
+
+    // 定义转换构造函数
+    Complex(float val):m_real(static_cast<int>(val)), m_virtual(0){};
+
+    // 重载 << 运算符
+    friend ostream & operator<<(ostream &out, Complex &c);
+
+    // 定义类型转换函数，将complex转换成int
+    operator int()const{ return m_real; }
+
+private:
+    int m_real;
+    int m_virtual;
+};
+
+ostream & operator<<(ostream &out, Complex &c){
+    out << c.m_real <<" + "<< c.m_virtual <<"i";
+    return out;
+}
+
+
+void std_customize_type_change(){
+    Complex c(1, 1);
+
+    std::cout << c << std::endl;        // 1 + 1i
+
+    c = 1.1;
+
+    std::cout << c << std::endl;        // 1 + 0i
+}
+
+
+void std_default_type_change(){
+    int a;
+
+    a = 1.99999;
+    std::cout << "a = " << a << std::endl;
+}
+
+
+void std_force_type_change(){
+    int a = 1;
+    int *b = &a;
+
+    // float *c = b;   // Cannot initialize a variable of type 'float *' with an lvalue of type 'int *'
+    auto *d = reinterpret_cast<float*>(b);      // 强制转换，也可以 auto *d = (float*)(b)
+
+}
+
+
+void std_convert_type_func() {
+    Complex c(1, 2);
+
+    int a = c;
+    assert(a == 1);
+}
+
 
 int main() {
-    std_array();
+    std_customize_type_change();
     return 0;
 }
