@@ -208,6 +208,34 @@ void std_datatype(){
 }
 
 
+void _sub_func_std_cpp_nullptr1(int i){ std::cout << "1" << std::endl;};
+void _sub_func_std_cpp_nullptr2(char *i){ std::cout << "2" << std::endl;};
+void std_cpp_nullptr(){
+    /* c++中的nullptr
+     *      nullptr是c++11中的关键字，表示空指针。他与c语言中的NULL不一样：
+     *          1. C语言中的NULL实际上是 (void*)0
+     *             c++中的nullptr是std::nullptr_t类型的一个常量。
+     *          2. C语言中的NULL不能转换成任意类型的指针，而c++中的nullptr是可以转换成任意类型指针的
+     */
+    int *num1 = nullptr;
+    std::cout << num1 << std::endl;          // 0x0
+    std::cout << NULL << std::endl;         // 0
+
+    assert(NULL == 0);             // ok
+    // assert(nullptr == 0);       // Invalid operands to binary expression ('nullptr_t' and 'int')
+
+    // int *num2 = (void *)1;      // Cannot initialize a variable of type 'int *' with an rvalue of type 'void *'
+    int *num3 = nullptr;           // ok
+
+    _sub_func_std_cpp_nullptr1(NULL);          // '1'
+    _sub_func_std_cpp_nullptr2(nullptr);    // '2'
+
+    char *name;
+    assert(name == nullptr);
+
+}
+
+
 void std_typedef(){
     /*  typedef声明
      *      1. 用来给一个已有的类型声明一个新的类型名，没有创造新的类型。
@@ -574,6 +602,6 @@ int main() {
 
 */
 
-    std_cpp_string();
+    std_cpp_nullptr();
     return 1;
 }
